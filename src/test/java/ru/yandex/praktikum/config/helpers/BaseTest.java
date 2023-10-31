@@ -3,27 +3,29 @@ package ru.yandex.praktikum.config.helpers;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
-import ru.yandex.praktikum.config.userData.Credentials;
-import ru.yandex.praktikum.config.userData.User;
-import ru.yandex.praktikum.config.userData.UserClient;
-import ru.yandex.praktikum.config.userData.UserGenerator;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.WebStorage;
+import ru.yandex.praktikum.config.userdata.Credentials;
+import ru.yandex.praktikum.config.userdata.User;
+import ru.yandex.praktikum.config.userdata.UserClient;
+import ru.yandex.praktikum.config.userdata.UserGenerator;
 
+import static io.restassured.RestAssured.baseURI;
 import static ru.yandex.praktikum.config.helpers.AppConfig.APP_MAIN_PAGE_URL;
 
 public class BaseTest {
     public WebDriver driver;
     String CHROME = "chrome";
     String YANDEX = "yandex";
-    String token;
 
     public User user;
     public Credentials creds;
     private final UserGenerator generator = new UserGenerator();
-    private final UserClient client = new UserClient();
+    public final UserClient client = new UserClient();
 
     public Credentials getUserCreds() {
         user = generator.random();
-        token = client.createUser(user).toString();
+        client.createUser(user);
         return creds = Credentials.from(user);
     }
 
@@ -39,9 +41,15 @@ public class BaseTest {
         return creds.getPassword();
     }
 
+    public String getAccessToken() {
+        LocalStorage localStorage = ((WebStorage) driver).getLocalStorage();
+        return localStorage.getItem("accessToken").substring(7);
+    }
+
     @Before
     public void init() {
-        driver = WebDriverFactory.getBrowser(CHROME);
+        baseURI = "https://stellarburgers.nomoreparties.site";
+        driver = WebDriverFactory.createWebDriver();
         driver.get(APP_MAIN_PAGE_URL);
 
     }

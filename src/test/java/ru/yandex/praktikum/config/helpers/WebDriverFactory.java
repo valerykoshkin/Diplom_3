@@ -5,23 +5,32 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class WebDriverFactory {
-    static WebDriver driver;
+    private static final String YANDEX_DRIVER = "src/main/resources/webdriver/bin/yandexdriver.exe";
 
-    public static WebDriver getBrowser(String browserName) {
+    public static WebDriver createWebDriver() {
+        String browser = System.getProperty("browser");
+        if (browser == null) {
+            return createChromeDriver();
+        }
 
-        switch (browserName) {
-            case "chrome":
-                driver = new ChromeDriver();
-                return driver;
+        switch (browser) {
             case "yandex":
-
-                System.setProperty("webdriver.chrome.driver", "C:\\Users\\drPepper92\\Diplom\\Diplom_3\\src\\main\\resources\\WebDriver\\bin\\yandexdriver.exe");
-                ChromeOptions options = new ChromeOptions();
-                options.setBinary("C:\\Users\\drPepper92\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe");
-                driver = new ChromeDriver(options);
-                return driver;
+                return createYandexDriver();
+            case "chrome":
+                return createChromeDriver();
             default:
-                throw new RuntimeException("Browser not found");
+                return createChromeDriver();
         }
     }
-}
+
+    private static WebDriver createChromeDriver() {
+        ChromeOptions options = new ChromeOptions();
+        return new ChromeDriver(options);
+    }
+
+    private static WebDriver createYandexDriver() {
+        System.setProperty("webdriver.chrome.driver", YANDEX_DRIVER);
+        ChromeOptions options = new ChromeOptions();
+        return new ChromeDriver(options);
+    }
+ }

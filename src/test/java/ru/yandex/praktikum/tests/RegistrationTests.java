@@ -1,6 +1,7 @@
 package ru.yandex.praktikum.tests;
 
 import io.qameta.allure.junit4.DisplayName;
+import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.praktikum.config.helpers.BaseTest;
@@ -15,10 +16,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlMatches;
 import static ru.yandex.praktikum.config.helpers.AppConfig.APP_LOGIN_PAGE_URL;
 
 public class RegistrationTests extends BaseTest {
-    private final String NAME = randomAlphanumeric(5, 10);
-    private final String EMAIL = randomAlphanumeric(5, 10) + "@yandex.ru";
-    private final String PASSWORD = randomAlphanumeric(6, 10);
-    private final String INCORRECT_PASSWORD = randomAlphanumeric(3, 5);
+    private static final String NAME = randomAlphanumeric(5, 10);
+    private static final String EMAIL = randomAlphanumeric(5, 10) + "@yandex.ru";
+    private static final String PASSWORD = randomAlphanumeric(6, 10);
+    private static final String INCORRECT_PASSWORD = randomAlphanumeric(3, 5);
+    String accessToken;
 
     @Test
     @DisplayName("Успешная регистрация пользователя")
@@ -38,6 +40,7 @@ public class RegistrationTests extends BaseTest {
         mainPage.accountButtonClick();
         LKPage lkPage = new LKPage(driver);
         lkPage.checkAccountsData(NAME, EMAIL);
+        accessToken = getAccessToken();
     }
 
     @Test
@@ -51,5 +54,12 @@ public class RegistrationTests extends BaseTest {
         loginPage.registrationLinkClick();
         registerPage.userRegistration(NAME, EMAIL, INCORRECT_PASSWORD);
         registerPage.checkError();
+    }
+
+    @After
+    public void deleteUser() {
+        if (accessToken != null) {
+            client.deleteUser(accessToken);
+        }
     }
 }

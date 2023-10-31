@@ -1,6 +1,7 @@
 package ru.yandex.praktikum.tests;
 
 import io.qameta.allure.junit4.DisplayName;
+import org.junit.After;
 import org.junit.Test;
 
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,6 +15,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlMatches;
 import static ru.yandex.praktikum.config.helpers.AppConfig.*;
 
 public class LKTests extends BaseTest {
+    String accessToken;
 
     @Test
     @DisplayName("Переход по клику на 'конструктор'")
@@ -28,6 +30,7 @@ public class LKTests extends BaseTest {
         mainPage.accountButtonClick();
         lkpage.clickConstructorButton();
         mainPage.checkMainHeader();
+        accessToken = getAccessToken();
     }
 
     @Test
@@ -43,6 +46,7 @@ public class LKTests extends BaseTest {
         mainPage.accountButtonClick();
         lkpage.clicklogoButton();
         mainPage.checkMainHeader();
+        accessToken = getAccessToken();
     }
 
     @Test
@@ -60,7 +64,17 @@ public class LKTests extends BaseTest {
                 .until(urlMatches(APP_MAIN_PAGE_URL));
 
         mainPage.accountButtonClick();
+        new WebDriverWait(driver, ofSeconds(5))
+                .until(urlMatches(APP_LK_PAGE_URL));
+        accessToken = getAccessToken();
         lkPage.clickExitButton();
         loginPage.checkEnterHeader();
+    }
+
+    @After
+    public void deleteUser() {
+        if (accessToken != null) {
+            client.deleteUser(accessToken);
+        }
     }
 }

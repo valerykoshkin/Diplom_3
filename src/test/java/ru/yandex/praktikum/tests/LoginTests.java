@@ -1,14 +1,16 @@
 package ru.yandex.praktikum.tests;
 
 import io.qameta.allure.junit4.DisplayName;
+import org.junit.After;
 import org.junit.Test;
 import ru.yandex.praktikum.config.helpers.BaseTest;
-import ru.yandex.praktikum.config.userData.Credentials;
+import ru.yandex.praktikum.config.userdata.Credentials;
 import ru.yandex.praktikum.pages.*;
 
 
 public class LoginTests extends BaseTest {
     Credentials creds;
+    String accessToken;
 
     @Test
     @DisplayName("Вход по кнопке 'войти в аккаунт'")
@@ -22,6 +24,7 @@ public class LoginTests extends BaseTest {
         mainPage.accountButtonClick();
         LKPage lkPage = new LKPage(driver);
         lkPage.checkAccountsData(getUserName(creds), getUserEmail(creds));
+        accessToken = getAccessToken();
     }
 
     @Test
@@ -37,6 +40,7 @@ public class LoginTests extends BaseTest {
         mainPage.accountButtonClick();
         LKPage lkPage = new LKPage(driver);
         lkPage.checkAccountsData(getUserName(creds), getUserEmail(creds));
+        accessToken = getAccessToken();
     }
 
     @Test
@@ -53,6 +57,7 @@ public class LoginTests extends BaseTest {
         mainPage.accountButtonClick();
         LKPage lkPage = new LKPage(driver);
         lkPage.checkAccountsData(getUserName(creds), getUserEmail(creds));
+        accessToken = getAccessToken();
     }
 
     @Test
@@ -70,5 +75,13 @@ public class LoginTests extends BaseTest {
         mainPage.accountButtonClick();
         LKPage lkPage = new LKPage(driver);
         lkPage.checkAccountsData(getUserName(creds), getUserEmail(creds));
+        accessToken = getAccessToken();
+    }
+
+    @After
+    public void deleteUser() {
+        if (accessToken != null) {
+            client.deleteUser(accessToken);
+        }
     }
 }

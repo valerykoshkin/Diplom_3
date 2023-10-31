@@ -7,15 +7,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import static java.time.Duration.ofSeconds;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.urlMatches;
-import static ru.yandex.praktikum.config.helpers.AppConfig.APP_LK_PAGE_URL;
-import static ru.yandex.praktikum.config.helpers.AppConfig.APP_MAIN_PAGE_URL;
+import static ru.yandex.praktikum.config.helpers.AppConfig.*;
 
 
 public class MainPage {
     WebDriver driver;
 
-    private final String AWAITING_CLASS = "tab_tab__1SPyG tab_tab_type_current__2BEPc pt-4 pr-10 pb-4 pl-10 noselect";
+    private static final String AWAITING_CLASS = "tab_tab__1SPyG tab_tab_type_current__2BEPc pt-4 pr-10 pb-4 pl-10 noselect";
 
     //Кнопка "войти"
     private final By goToAccount = By.className("button_button__33qZ0");
@@ -43,8 +41,7 @@ public class MainPage {
     //Клик по кнопке "Личный кабинет"
     public void accountButtonClick() {
         driver.findElement(lkButton).click();
-        new WebDriverWait(driver, ofSeconds(5))
-                .until(urlMatches(APP_LK_PAGE_URL));
+        new WebDriverWait(driver, ofSeconds(5));
     }
 
     //Клик по кнопке "Войти"
